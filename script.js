@@ -1,10 +1,14 @@
 const apple = document.getElementById("apple");
 
-const snake = document.getElementById("snake");
+const snakeHead = document.getElementById("snake");
+
+const environement = document.getElementById("environement");
 
 let snakeDirection = { x: 0, y: 0 };
 
 let head = { top: 240, left: 490 };
+
+let snake = [snakeHead]
 
 addEventListener("keydown", (event) => {
   if (event.key === "ArrowUp") {
@@ -33,13 +37,19 @@ setInterval(() => {
 MoveSnake();
 
 function MoveSnake() {
+
   head.top += snakeDirection.y;
 
   head.left += snakeDirection.x;
 
-  snake.style.top = `${head.top}px`;
+  for (let i = snake.length - 1; i >= 0; i--) { 
 
-  snake.style.left = `${head.left}px`;
+    snake[i].style.top = `${head.top - i*20}px`;
+  
+    snake[i].style.left = `${head.left - i*20}px`;
+  }
+
+ 
 }
 
 function PlaceApple() {
@@ -53,7 +63,14 @@ function PlaceApple() {
 }
 
 function CheckScore() {
-  if (CheckOverlap(snake, apple)) {
+  if (CheckOverlap(snakeHead, apple)) {
+    console.log("Apple eaten");
+    let newSnake = document.createElement("div");
+    newSnake.classList.add("snake");
+    newSnake.style.top = `${head.top}px`;
+    newSnake.style.left = `${head.left}px`;
+    snake.push(newSnake);
+    environement.appendChild(newSnake);
     PlaceApple();
   }
 }
@@ -71,8 +88,8 @@ function CheckOverlap(element1, element2) {
 }
 
 function CheckGameOver() {
-  let snakePositionX = parseInt(snake.style.left.split("px")[0]);
-  let snakePositionY = parseInt(snake.style.top.split("px")[0]);
+  let snakePositionX = parseInt(snakeHead.style.left.split("px")[0]);
+  let snakePositionY = parseInt(snakeHead.style.top.split("px")[0]);
 
   if (snakePositionX >= 980 || snakePositionY >= 480) {
     console.log("Game Over");
